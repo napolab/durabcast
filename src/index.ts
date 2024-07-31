@@ -15,8 +15,9 @@ type Env = {
 const app = new Hono<Env>();
 
 const route = app
-  .get('/', upgrade(), async (c) => {
-    const roomId = 'default';
+  .get('/rooms/:roomId', upgrade(), zValidator('query', z.object({ uid: z.string() })), async (c) => {
+    const roomId = c.req.param('roomId');
+    const uid = c.req.valid('query').uid;
     const id = c.env.BROADCAST_MESSAGE.idFromName(roomId);
     const stub = c.env.BROADCAST_MESSAGE.get(id);
 
@@ -25,10 +26,7 @@ const route = app
     });
 
     const res = await client.rooms[':roomId'].$get(
-      {
-        query: { uid: '123' },
-        param: { roomId },
-      },
+      { query: { uid }, param: { roomId } },
       { init: { headers: c.req.raw.headers } },
     );
 
@@ -39,8 +37,8 @@ const route = app
       statusText: res.statusText,
     });
   })
-  .post('/broadcast', zValidator('json', z.object({ message: z.string() })), async (c) => {
-    const roomId = 'default';
+  .post('/rooms/:roomId/broadcast', zValidator('json', z.object({ message: z.string() })), async (c) => {
+    const roomId = c.req.param('roomId');
     const id = c.env.BROADCAST_MESSAGE.idFromName(roomId);
     const stub = c.env.BROADCAST_MESSAGE.get(id);
 
