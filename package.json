@@ -1,0 +1,43 @@
+{
+  "name": "durable-object-broadcast-message",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": ["dist", "README.md"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@cloudflare/workers-types": "^4.20240529.0",
+    "hono": "^4.5.3",
+    "tsup": "^8.2.3",
+    "typescript": "^5.5.4",
+    "wrangler": "^3.67.1"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "lint": "biome check",
+    "fmt": "biome check --write",
+    "typecheck": "tsc --noEmit",
+    "build": "tsup"
+  },
+  "peerDependencies": {
+    "hono": ">=4.3.0"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.2.2",
+    "zod": "^3.23.8"
+  }
+}
