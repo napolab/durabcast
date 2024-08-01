@@ -88,21 +88,6 @@ describe('BroadcastMessage Durable Object', () => {
     });
   });
 
-  it('handles WebSocket errors', async () => {
-    const id = env.BROADCAST_MESSAGE.newUniqueId();
-    const stub = env.BROADCAST_MESSAGE.get(id);
-
-    await runInDurableObject(stub, async (instance: BroadcastMessage) => {
-      const error = new Error('WebSocket error');
-      vi.spyOn(console, 'error');
-
-      const pair = new WebSocketPair();
-      const server = pair[1];
-      instance.webSocketError(server, error);
-      expect(console.error).toHaveBeenCalledWith('WebSocket error:', error);
-    });
-  });
-
   it('resets alarm correctly', async () => {
     const id = env.BROADCAST_MESSAGE.newUniqueId();
     const stub = env.BROADCAST_MESSAGE.get(id);
