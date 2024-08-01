@@ -120,13 +120,8 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
     this.broadcast(message);
   }
 
-  webSocketError(ws: WebSocket, error: unknown): void {
-    console.error('WebSocket error:', error);
-  }
-
   webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): void {
     this.sessions.delete(ws);
-    console.info('WebSocket closed:', { code, reason, wasClean });
   }
 
   fetch(request: Request) {
