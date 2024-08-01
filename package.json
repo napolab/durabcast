@@ -26,9 +26,10 @@
       }
     }
   },
-  "files": ["dist", "README.md"],
+  "files": ["dist", "README.md", "package.json"],
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
+    "@changesets/cli": "^2.27.7",
     "@cloudflare/vitest-pool-workers": "^0.4.16",
     "@cloudflare/workers-types": "^4.20240529.0",
     "@vitest/coverage-v8": "^2.0.5",
@@ -45,7 +46,8 @@
     "fmt": "biome check --write",
     "typecheck": "tsc --noEmit",
     "build": "tsup",
-    "test": "vitest --passWithNoTests"
+    "test": "vitest --passWithNoTests",
+    "release": "changeset publish"
   },
   "peerDependencies": {
     "hono": ">=4.3.0"
