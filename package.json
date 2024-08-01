@@ -14,6 +14,16 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./helpers/upgrade": {
+      "import": {
+        "types": "./dist/helpers/upgrade.d.ts",
+        "default": "./dist/helpers/upgrade.js"
+      },
+      "require": {
+        "types": "./dist/helpers/upgrade.d.cts",
+        "default": "./dist/helpers/upgrade.cjs"
+      }
     }
   },
   "files": ["dist", "README.md"],

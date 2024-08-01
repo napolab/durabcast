@@ -1,7 +1,10 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/broadcast-message.do/index.ts'],
+  entry: {
+    index: 'src/broadcast-message.do/index.ts',
+    'helpers/upgrade': 'src/middleware/upgrade/index.ts',
+  },
   external: ['hono', /cloudflare:/],
   format: ['cjs', 'esm'],
   clean: true,
