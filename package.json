@@ -1,5 +1,6 @@
 {
-  "name": "durable-object-broadcast-message",
+  "name": "durabcast",
+  "version": "0.0.0",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -32,7 +33,6 @@
     "@changesets/cli": "^2.27.7",
     "@cloudflare/vitest-pool-workers": "^0.4.16",
     "@cloudflare/workers-types": "^4.20240529.0",
-    "@vitest/coverage-v8": "^2.0.5",
     "hono": "^4.5.3",
     "tsup": "^8.2.3",
     "typescript": "^5.5.4",
