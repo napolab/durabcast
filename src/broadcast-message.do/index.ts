@@ -86,9 +86,11 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
       connectedAt: new Date(),
     } satisfies WebSocketAttachment);
 
-    const alarm = await this.ctx.storage.getAlarm();
-    if (alarm === null) {
-      await this.ctx.storage.setAlarm(Date.now() + this.INTERVAL);
+    if (this.AUTO_CLOSE) {
+      const alarm = await this.ctx.storage.getAlarm();
+      if (alarm === null) {
+        await this.ctx.storage.setAlarm(Date.now() + this.INTERVAL);
+      }
     }
 
     return client;
@@ -132,16 +134,18 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
   }
 
   async alarm(): Promise<void> {
-    for (const ws of this.sessions) {
-      if (!this.isAliveSocket(ws)) {
-        ws.close();
-        this.sessions.delete(ws);
+    if (this.AUTO_CLOSE) {
+      for (const ws of this.sessions) {
+        if (!this.isAliveSocket(ws)) {
+          ws.close();
+          this.sessions.delete(ws);
+        }
       }
-    }
 
-    const alarm = await this.ctx.storage.getAlarm();
-    if (this.sessions.size > 0 && alarm === null) {
-      await this.ctx.storage.setAlarm(Date.now() + this.INTERVAL);
+      const alarm = await this.ctx.storage.getAlarm();
+      if (this.sessions.size > 0 && alarm === null) {
+        await this.ctx.storage.setAlarm(Date.now() + this.INTERVAL);
+      }
     }
   }
 }
