@@ -1,4 +1,4 @@
-name = "durable-object-broadcast-message"
+name = "durabcast"
 main = "src/index.ts"
 compatibility_date = "2024-07-18"
 
