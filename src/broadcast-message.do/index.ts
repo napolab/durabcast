@@ -59,16 +59,16 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
   });
 
   constructor(
-    public state: DurableObjectState,
+    public ctx: DurableObjectState,
     public env: E['Bindings'],
   ) {
-    super(state, env);
-    state.blockConcurrencyWhile(this.onStart.bind(this));
+    super(ctx, env);
+    ctx.blockConcurrencyWhile(this.onStart.bind(this));
   }
 
   protected async onStart() {
-    this.state.setWebSocketAutoResponse(this.REQUEST_RESPONSE_PAIR);
-    for (const ws of this.state.getWebSockets()) {
+    this.ctx.setWebSocketAutoResponse(this.REQUEST_RESPONSE_PAIR);
+    for (const ws of this.ctx.getWebSockets()) {
       this.sessions.add(ws);
     }
   }
@@ -86,9 +86,9 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
       connectedAt: new Date(),
     } satisfies WebSocketAttachment);
 
-    const alarm = await this.state.storage.getAlarm();
+    const alarm = await this.ctx.storage.getAlarm();
     if (alarm === null) {
-      await this.state.storage.setAlarm(Date.now() + this.INTERVAL);
+      await this.ctx.storage.setAlarm(Date.now() + this.INTERVAL);
     }
 
     return client;
@@ -97,7 +97,7 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
   broadcast(message: string | ArrayBuffer, options: BroadcastOptions = {}) {
     const { excludes = [], uid = [] } = options;
 
-    for (const ws of this.state.getWebSockets()) {
+    for (const ws of this.ctx.getWebSockets()) {
       const state: WebSocketAttachment = ws.deserializeAttachment();
       if (excludes.includes(ws)) continue;
       if (uid.length > 0 && !uid.includes(state.uid)) continue;
@@ -108,7 +108,7 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
 
   isAliveSocket(ws: WebSocket) {
     const state: WebSocketAttachment = ws.deserializeAttachment();
-    const pingAt = this.state.getWebSocketAutoResponseTimestamp(ws);
+    const pingAt = this.ctx.getWebSocketAutoResponseTimestamp(ws);
     const responseAt = pingAt ?? state.connectedAt;
 
     return Date.now() - responseAt.getTime() < this.TIMEOUT;
@@ -139,9 +139,9 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
       }
     }
 
-    const alarm = await this.state.storage.getAlarm();
+    const alarm = await this.ctx.storage.getAlarm();
     if (this.sessions.size > 0 && alarm === null) {
-      await this.state.storage.setAlarm(Date.now() + this.INTERVAL);
+      await this.ctx.storage.setAlarm(Date.now() + this.INTERVAL);
     }
   }
 }
