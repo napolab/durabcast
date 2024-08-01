@@ -27,11 +27,24 @@
       }
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
+  "typesVersions": {
+    "*": {
+      "helpers": ["./dist/helpers"]
+    }
+  },
+  "files": ["dist", "README.md", "package.json"],
+  "private": false,
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/napolab/duracast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/napolab/duracast/issues"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@changesets/cli": "^2.27.7",
