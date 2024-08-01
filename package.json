@@ -1,6 +1,6 @@
 {
   "name": "durabcast",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -27,7 +27,11 @@
       }
     }
   },
-  "files": ["dist", "README.md", "package.json"],
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@changesets/cli": "^2.27.7",
