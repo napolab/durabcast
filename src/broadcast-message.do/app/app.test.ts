@@ -1,4 +1,4 @@
-import { createApp } from './app';
+import { createApp } from '.';
 
 const mockService = {
   createRoom: vi.fn(),
@@ -55,12 +55,5 @@ describe('Room Creation API', () => {
     });
 
     expect(response.status).toBe(500);
-  });
-
-  it('returns 426 when Upgrade header is not websocket', async () => {
-    const response = await app.request('http://localhost/rooms/testRoom?uid=testUser');
-
-    expect(response.status).toBe(426);
-    expect(await response.text()).toBe('Expected websocket');
   });
 });

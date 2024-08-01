@@ -71,8 +71,6 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
     for (const ws of this.state.getWebSockets()) {
       this.sessions.add(ws);
     }
-
-    console.log('BroadcastMessage started', this.sessions.size);
   }
 
   protected async createRoom(roomId: string, uid: string) {

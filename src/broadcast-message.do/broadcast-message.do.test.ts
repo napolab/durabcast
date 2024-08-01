@@ -121,17 +121,6 @@ describe('BroadcastMessage Durable Object', () => {
     });
   });
 
-  it('handles upgrade header missing', async () => {
-    const id = env.BROADCAST_MESSAGE.newUniqueId();
-    const stub = env.BROADCAST_MESSAGE.get(id);
-
-    await runInDurableObject(stub, async (instance: BroadcastMessage) => {
-      const response = await instance.fetch(new Request('http://localhost/rooms/room1?uid=user1'));
-
-      expect(response.status).toBe(426);
-    });
-  });
-
   it('lists durable object IDs', async () => {
     let ids = await listDurableObjectIds(env.BROADCAST_MESSAGE);
     expect(ids.length).toBe(0);

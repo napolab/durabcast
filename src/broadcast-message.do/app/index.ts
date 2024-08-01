@@ -1,7 +1,6 @@
 import { zValidator } from '@hono/zod-validator';
 import { createFactory } from 'hono/factory';
 import { z } from 'zod';
-import { upgrade } from '../middleware/upgrade';
 
 type Service = {
   createRoom(roomId: string, uid: string): Promise<WebSocket>;
@@ -20,7 +19,7 @@ export const createApp = (service: Service) => {
   });
 
   const app = factory.createApp();
-  return app.get('/rooms/:roomId', upgrade(), zValidator('query', z.object({ uid: z.string().min(1) })), async (c) => {
+  return app.get('/rooms/:roomId', zValidator('query', z.object({ uid: z.string().min(1) })), async (c) => {
     const query = c.req.valid('query');
     const webSocket = await c.var.createRoom(c.req.param('roomId'), query.uid);
 
