@@ -40,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/napolab/duracast.git"
+    "url": "git+https://github.com/napolab/durabcast.git"
   },
   "bugs": {
-    "url": "https://github.com/napolab/duracast/issues"
+    "url": "https://github.com/napolab/durabcast/issues"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
