@@ -2,32 +2,10 @@ import { DurableObject } from 'cloudflare:workers';
 import { createApp } from './app';
 
 import type { Env } from 'hono';
+import type { BroadcastMessageOptions, BroadcastOptions, WebSocketAttachment } from './types';
 
-type DeepPartial<T> = {
-  [K in keyof T]?: T[K] extends Record<string, unknown> ? DeepPartial<T[K]> : T[K];
-};
-
-export type BroadcastMessageOptions = DeepPartial<{
-  autoClose: boolean;
-  interval: number;
-  timeout: number;
-  requestResponsePair: {
-    request: string;
-    response: string;
-  };
-}>;
-
-export type WebSocketAttachment = {
-  roomId: string;
-  uid: string;
-  connectedAt: Date;
-};
-type BroadcastOptions = {
-  uid?: string[];
-  excludes?: WebSocket[];
-};
-
-export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bindings']> {
+type BroadcastMessageAppType = ReturnType<typeof createApp>;
+class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bindings']> {
   protected options: BroadcastMessageOptions = {
     autoClose: true,
     interval: 30 * 1000,
@@ -66,14 +44,14 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
     ctx.blockConcurrencyWhile(this.onStart.bind(this));
   }
 
-  protected async onStart() {
+  protected async onStart(): Promise<void> {
     this.ctx.setWebSocketAutoResponse(this.REQUEST_RESPONSE_PAIR);
     for (const ws of this.ctx.getWebSockets()) {
       this.sessions.add(ws);
     }
   }
 
-  protected async createRoom(roomId: string, uid: string) {
+  protected async createRoom(roomId: string, uid: string): Promise<WebSocket> {
     const pair = new WebSocketPair();
     const client = pair[0];
     const server = pair[1];
@@ -96,7 +74,7 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
     return client;
   }
 
-  broadcast(message: string | ArrayBuffer, options: BroadcastOptions = {}) {
+  broadcast(message: string | ArrayBuffer, options: BroadcastOptions = {}): void {
     const { excludes = [], uid = [] } = options;
 
     for (const ws of this.ctx.getWebSockets()) {
@@ -108,7 +86,7 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
     }
   }
 
-  isAliveSocket(ws: WebSocket) {
+  isAliveSocket(ws: WebSocket): boolean {
     const state: WebSocketAttachment = ws.deserializeAttachment();
     const pingAt = this.ctx.getWebSocketAutoResponseTimestamp(ws);
     const responseAt = pingAt ?? state.connectedAt;
@@ -124,7 +102,7 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
     this.sessions.delete(ws);
   }
 
-  fetch(request: Request) {
+  fetch(request: Request): Response | Promise<Response> {
     return this.app.request(request, undefined, this.env);
   }
 
@@ -145,4 +123,10 @@ export class BroadcastMessage<E extends Env = Env> extends DurableObject<E['Bind
   }
 }
 
-export type BroadcastMessageAppType = ReturnType<typeof createApp>;
+export {
+  BroadcastMessage,
+  type BroadcastMessageOptions,
+  type WebSocketAttachment,
+  type BroadcastOptions,
+  type BroadcastMessageAppType,
+};
