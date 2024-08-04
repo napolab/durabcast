@@ -260,7 +260,6 @@ describe('BroadcastMessage Durable Object', () => {
   });
 });
 
-
 describe('BroadcastMessage Durable Object with Options', () => {
   beforeEach(() => {
     vi.useFakeTimers();
