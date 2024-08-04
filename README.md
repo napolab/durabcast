@@ -73,7 +73,8 @@ const route = app
       const id = c.env.BROADCAST_MESSAGE.idFromName(roomId);
       const stub = c.env.BROADCAST_MESSAGE.get(id);
 
-      const client = hc<BroadcastMessageAppType>(c.req.url, {
+      const baseURL = new URL("/", c.req.url);
+      const client = hc<BroadcastMessageAppType>(baseURL.toString(), {
         fetch: stub.fetch.bind(stub),
       });
 

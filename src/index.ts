@@ -17,16 +17,16 @@ const app = new Hono<Env>();
 const route = app
   .get('/rooms/:roomId', upgrade(), zValidator('query', z.object({ uid: z.string() })), async (c) => {
     const roomId = c.req.param('roomId');
-    const uid = c.req.valid('query').uid;
+    const query = c.req.valid('query');
     const id = c.env.BROADCAST_MESSAGE.idFromName(roomId);
     const stub = c.env.BROADCAST_MESSAGE.get(id);
 
-    const client = hc<BroadcastMessageAppType>(c.req.url, {
+    const client = hc<BroadcastMessageAppType>(new URL('/', c.req.url).toString(), {
       fetch: stub.fetch.bind(stub),
     });
 
     const res = await client.rooms[':roomId'].$get(
-      { query: { uid }, param: { roomId } },
+      { query: { uid: query.uid }, param: { roomId } },
       { init: { headers: c.req.raw.headers } },
     );
 
