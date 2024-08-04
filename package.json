@@ -1,6 +1,6 @@
 {
   "name": "durabcast",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -29,10 +29,16 @@
   },
   "typesVersions": {
     "*": {
-      "helpers": ["./dist/helpers"]
+      "helpers": [
+        "./dist/helpers"
+      ]
     }
   },
-  "files": ["dist", "README.md", "package.json"],
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "private": false,
   "license": "MIT",
   "publishConfig": {
