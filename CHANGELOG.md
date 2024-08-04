@@ -1,5 +1,11 @@
 # durabcast
 
+## 0.1.2
+
+### Patch Changes
+
+- 746d866: refactor testing
+
 ## 0.1.1
 
 ### Patch Changes
