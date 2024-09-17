@@ -25,20 +25,19 @@
         "types": "./dist/helpers/upgrade.d.cts",
         "default": "./dist/helpers/upgrade.cjs"
       }
+    },
+    "./helpers/client": {
+      "import": {
+        "types": "./dist/helpers/client.d.ts",
+        "default": "./dist/helpers/client.js"
+      },
+      "require": {
+        "types": "./dist/helpers/client.d.cts",
+        "default": "./dist/helpers/client.cjs"
+      }
     }
   },
-  "typesVersions": {
-    "*": {
-      "helpers": [
-        "./dist/helpers"
-      ]
-    }
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
+  "files": ["dist", "README.md", "package.json"],
   "private": false,
   "license": "MIT",
   "publishConfig": {
