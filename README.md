@@ -27,6 +27,7 @@
 ## Installation
 
 ```sh
+npm install -D @cloudflare/workers-types
 npm install durabcast
 ```
 

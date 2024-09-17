@@ -37,11 +37,6 @@
       }
     }
   },
-  "typesVersions": {
-    "*": {
-      "helpers": ["./dist/helpers"]
-    }
-  },
   "files": ["dist", "README.md", "package.json"],
   "private": false,
   "license": "MIT",
