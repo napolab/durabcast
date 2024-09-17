@@ -1,0 +1,38 @@
+name: Package Size Report
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pkg-size-report:
+    name: Package Size Report
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache node_modules
+        uses: ./.github/actions/cache-node-modules
+        with:
+          path: "**/node_modules"
+
+      - name: Package size report
+        uses: preactjs/compressed-size-action@v2
+        with:
+          install-script: "bun install"
+          build-script: "build"
+          pattern: "./dist/*.{ts,js,cjs}"
+          exclude: "{**/*.map,**/node_modules/**}"
