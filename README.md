@@ -10,12 +10,18 @@
   - `interval` and `timeout` can be configured through options.
   - Opt-out of auto-closing by setting `autoClose` to `false`.
 
+- **Client-Side Keep-Alive with `pingWebSocket`**
+
+  - Use the `pingWebSocket` function on the client side to send periodic ping messages.
+  - Ensures the connection remains active when `autoClose` is enabled on the server.
+
 - **Message Broadcasting**
 
   - Broadcast messages to other connected clients.
   - Override `webSocketMessage` to customize message handling.
 
 - **Connection Alive Check**
+
   - Use `isAliveSocket` to check if a connection is still alive.
 
 ## Installation
@@ -28,7 +34,7 @@ npm install durabcast
 
 Here is a simple example to get started with `DurabCast`.
 
-### wrangler.toml
+### `wrangler.toml`
 
 ```toml
 name = "sample"
@@ -44,7 +50,7 @@ tag = "v1"
 new_classes = ["BroadcastMessage"]
 ```
 
-### index.ts
+### `index.ts`
 
 ```ts
 import { BroadcastMessage, type BroadcastMessageAppType } from "durabcast";
@@ -107,9 +113,68 @@ const route = app
 export { BroadcastMessage };
 ```
 
+## Client-Side Keep-Alive with `pingWebSocket`
+
+When the `autoClose` feature is enabled on the server side, the server automatically closes idle connections after a specified timeout. To ensure that the client connection remains active, you can use the `pingWebSocket` function on the client side to send periodic ping messages.
+
+### `pingWebSocket` Function
+
+The `pingWebSocket` function sends a ping message to the server at regular intervals. This keeps the connection alive by resetting the idle timeout on the server side.
+
+#### Usage
+
+```typescript
+import { pingWebSocket } from "durabcast/helpers/client";
+
+const ws = new WebSocket("wss://your-server.com/rooms/room123");
+
+// Start sending ping messages every 30 seconds
+const unsubscribe = pingWebSocket(ws, { interval: 30000, ping: "ping" });
+
+// To stop sending pings, call the unsubscribe function
+// unsubscribe();
+```
+
+#### Parameters
+
+- **`ws`**: The WebSocket instance to send ping messages through.
+- **`options`** (optional): An object to configure the ping behavior.
+  - **`interval`**: The interval (in milliseconds) at which to send ping messages. Defaults to `10000` (10 seconds).
+  - **`ping`**: The ping message to send. Defaults to `'ping'`.
+
+### Benefits
+
+- **Keeps Connection Alive**: Ensures that the server recognizes the connection as active.
+- **Prevents Unintentional Disconnections**: Avoids the connection being closed by the server's auto-close mechanism due to inactivity.
+- **Configurable**: Allows customization of the ping interval and message.
+
+### Example
+
+```typescript
+import { pingWebSocket } from "durabcast/helpers/client";
+
+const ws = new WebSocket("wss://your-server.com/rooms/room123");
+
+ws.onopen = () => {
+  // Start sending pings every 30 seconds
+  const unsubscribe = pingWebSocket(ws, {
+    interval: 30000,
+    ping: "keep-alive",
+  });
+
+  // Handle incoming messages
+  ws.onmessage = (event) => {
+    console.log("Received:", event.data);
+  };
+
+  // Optionally, stop sending pings when needed
+  // unsubscribe();
+};
+```
+
 ## Advanced Usage
 
-### Extending the BroadcastMessage Class
+### Extending the `BroadcastMessage` Class
 
 You can extend the `BroadcastMessage` class to customize the behavior of your WebSocket connections.
 
@@ -118,16 +183,17 @@ import { BroadcastMessage, type BroadcastMessageOptions } from "durabcast";
 
 class CustomBroadcastMessage extends BroadcastMessage {
   protected options: BroadcastMessageOptions = {
-    autoClose: false,
+    interval: 30000, // Check every 30 seconds
+    timeout: 60000, // Close connection if idle for 60 seconds
+    autoClose: true, // Enable auto-close
+    requestResponsePair: {
+      request: "ping",
+      response: "pong",
+    },
   };
 
   webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): void {
-    for (const session of this.sessions) {
-      if (!this.isAliveSocket(session)) {
-        session.close();
-        this.sessions.delete(session);
-      }
-    }
+    // Broadcast message to other clients
     this.broadcast(message, {
       excludes: [ws],
     });
@@ -136,6 +202,64 @@ class CustomBroadcastMessage extends BroadcastMessage {
 
 // Use CustomBroadcastMessage in your Durable Object binding
 ```
+
+### Combining with `pingWebSocket`
+
+When `autoClose` is enabled, it's important to ensure that the client sends periodic messages to keep the connection alive. By using `pingWebSocket` on the client side, you can automatically send these keep-alive messages.
+
+#### Server-Side Configuration
+
+```ts
+class CustomBroadcastMessage extends BroadcastMessage {
+  protected options: BroadcastMessageOptions = {
+    autoClose: true, // Enable auto-close
+    interval: 30000, // Check every 30 seconds
+    timeout: 60000, // Close if idle for 60 seconds
+    requestResponsePair: {
+      request: "ping",
+      response: "pong",
+    },
+  };
+
+  webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): void {
+    // Handle ping-pong messages internally
+    if (message === this.REQUEST_RESPONSE_PAIR.request) {
+      ws.send(this.REQUEST_RESPONSE_PAIR.response);
+      return;
+    }
+
+    // Broadcast other messages
+    this.broadcast(message, { excludes: [ws] });
+  }
+}
+```
+
+#### Client-Side Usage
+
+```typescript
+import { pingWebSocket } from "durabcast/helpers/client";
+
+const ws = new WebSocket("wss://your-server.com/rooms/room123");
+
+ws.onopen = () => {
+  // Start sending pings to keep the connection alive
+  const unsubscribe = pingWebSocket(ws, {
+    interval: 30000, // Every 30 seconds
+    ping: "ping", // Must match server's expected request
+  });
+
+  ws.onmessage = (event) => {
+    // Handle incoming messages
+    console.log("Received:", event.data);
+  };
+};
+```
+
+### Why Use `pingWebSocket` with `autoClose`
+
+- **Seamless Integration**: `pingWebSocket` is designed to work with the server's `autoClose` feature, ensuring connections remain active as needed.
+- **Resource Optimization**: By automatically closing idle connections, the server conserves resources, and `pingWebSocket` ensures that active clients are not disconnected.
+- **Consistency**: Using standardized ping messages simplifies the client-server communication protocol.
 
 ## API
 
@@ -160,7 +284,13 @@ class CustomBroadcastMessage extends BroadcastMessage {
   };
 
   webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): void {
-    // Broadcast message to other clients
+    // Handle ping-pong messages internally
+    if (message === this.REQUEST_RESPONSE_PAIR.request) {
+      ws.send(this.REQUEST_RESPONSE_PAIR.response);
+      return;
+    }
+
+    // Broadcast other messages
     this.broadcast(message, {
       excludes: [ws],
     });
@@ -168,13 +298,7 @@ class CustomBroadcastMessage extends BroadcastMessage {
 }
 
 // In your Durable Object binding, use CustomBroadcastMessage
-export default {
-  async fetch(request: Request, env: Env) {
-    const id = env.BROADCAST_MESSAGE.idFromName("my-room");
-    const stub = env.BROADCAST_MESSAGE.get(id);
-    return stub.fetch(request);
-  },
-};
+export { CustomBroadcastMessage as BroadcastMessage };
 ```
 
 ### Message Broadcasting
@@ -203,7 +327,7 @@ if (!isAlive) {
 }
 ```
 
-## Extending the BroadcastMessage Class
+## Extending the `BroadcastMessage` Class
 
 When extending the `BroadcastMessage` class, you can access and modify the `options` field to customize the behavior of your WebSocket connections.
 
@@ -215,7 +339,7 @@ The `options` field allows you to configure the behavior of your WebSocket conne
 
 - **`interval`**: The interval (in milliseconds) at which to check for idle connections.
 - **`timeout`**: The timeout (in milliseconds) after which idle connections are closed.
-- **`autoClose`**: A boolean indicating whether to automatically close idle connections. Set to `false` to opt-out of this behavior.
+- **`autoClose`**: A boolean indicating whether to automatically close idle connections. Set to `false` to opt out of this behavior.
 - **`requestResponsePair`**: An object containing `request` and `response` strings used for ping-pong style connection checks.
 
 ### Protected Methods and Fields
@@ -223,8 +347,8 @@ The `options` field allows you to configure the behavior of your WebSocket conne
 These protected methods and fields are available within any class that extends `BroadcastMessage`:
 
 - **`AUTO_CLOSE`**: Returns the value of `options.autoClose`, defaulting to `true` if not set.
-- **`INTERVAL`**: Returns the value of `options.interval`, defaulting to `30 * 1000` (30 seconds) if not set.
-- **`TIMEOUT`**: Returns the value of `options.timeout`, defaulting to `60 * 1000` (60 seconds) if not set.
+- **`INTERVAL`**: Returns the value of `options.interval`, defaulting to `30000` (30 seconds) if not set.
+- **`TIMEOUT`**: Returns the value of `options.timeout`, defaulting to `60000` (60 seconds) if not set.
 - **`REQUEST_RESPONSE_PAIR`**: Returns a `WebSocketRequestResponsePair` object using the `options.requestResponsePair` values, defaulting to `'ping'` and `'pong'` if not set.
 - **`sessions`**: A set of active WebSocket sessions.
 
@@ -247,11 +371,11 @@ class CustomBroadcastMessage extends BroadcastMessage {
   }
 
   protected get INTERVAL() {
-    return this.options.interval ?? 30 * 1000;
+    return this.options.interval ?? 30000;
   }
 
   protected get TIMEOUT() {
-    return this.options.timeout ?? 60 * 1000;
+    return this.options.timeout ?? 60000;
   }
 
   protected get REQUEST_RESPONSE_PAIR() {
@@ -264,6 +388,12 @@ class CustomBroadcastMessage extends BroadcastMessage {
   protected sessions = new Set<WebSocket>();
 
   webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): void {
+    // Handle ping-pong messages
+    if (message === this.REQUEST_RESPONSE_PAIR.request) {
+      ws.send(this.REQUEST_RESPONSE_PAIR.response);
+      return;
+    }
+
     // Custom message handling logic
     this.broadcast(message, {
       excludes: [ws],
