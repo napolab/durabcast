@@ -1,5 +1,11 @@
 # durabcast
 
+## 0.2.0
+
+### Minor Changes
+
+- e5bc04f: add client helper function(pingWebSocket) to send ping message to server
+
 ## 0.1.2
 
 ### Patch Changes
