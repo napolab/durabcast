@@ -34,5 +34,5 @@ jobs:
         with:
           install-script: "bun install"
           build-script: "build"
-          pattern: "./dist/**/*.{ts,js,cjs}"
+          pattern: "./dist/**/*.{js}"
           exclude: "{**/*.map,**/node_modules/**}"
