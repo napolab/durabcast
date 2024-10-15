@@ -1,3 +1,8 @@
+/**
+ * undici fetch では `new Response(null, { status: 101 })` がエラーになるので `@cloudflare/vitest-pool-workers` に乗っかることにする
+ * cf: https://leaysgur.github.io/posts/2023/04/19/150218/
+ **/
+
 import { createApp } from '.';
 
 const mockService = {

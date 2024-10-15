@@ -7,6 +7,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PNPM_VERSION: 9.12.1
+
 jobs:
   pkg-size-report:
     name: Package Size Report
@@ -16,10 +19,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
+          node-version-file: package.json
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -32,7 +38,7 @@ jobs:
       - name: Package size report
         uses: preactjs/compressed-size-action@v2
         with:
-          install-script: "bun install"
+          install-script: "pnpm install"
           build-script: "build"
           pattern: "./dist/**/*.{js}"
           exclude: "{**/*.map,**/node_modules/**}"
