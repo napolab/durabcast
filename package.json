@@ -38,11 +38,7 @@
       }
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
+  "files": ["dist", "README.md", "package.json"],
   "private": false,
   "license": "MIT",
   "publishConfig": {
@@ -58,12 +54,12 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@changesets/cli": "^2.27.7",
-    "@cloudflare/vitest-pool-workers": "^0.4.16",
+    "@cloudflare/vitest-pool-workers": "^0.5.18",
     "@cloudflare/workers-types": "^4.20240529.0",
     "hono": "^4.5.3",
     "tsup": "^8.2.3",
     "typescript": "^5.5.4",
-    "vitest": "1.5.0",
+    "vitest": "2.1.3",
     "wrangler": "^3.67.1"
   },
   "scripts": {
