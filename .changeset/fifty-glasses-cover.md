@@ -1,0 +1,5 @@
+---
+"durabcast": patch
+---
+
+sideeffect false
