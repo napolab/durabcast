@@ -1,5 +1,11 @@
 # durabcast
 
+## 0.2.1
+
+### Patch Changes
+
+- a6ef72c: sideeffect false
+
 ## 0.2.0
 
 ### Minor Changes
