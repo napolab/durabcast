@@ -57,6 +57,7 @@
     "@cloudflare/vitest-pool-workers": "^0.5.18",
     "@cloudflare/workers-types": "^4.20240529.0",
     "hono": "^4.6.8",
+    "terser": "^5.36.0",
     "tsup": "^8.2.3",
     "typescript": "^5.5.4",
     "vitest": "2.1.3",
