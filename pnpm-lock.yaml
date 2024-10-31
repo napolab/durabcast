@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@hono/zod-validator':
-        specifier: ^0.2.2
-        version: 0.2.2(hono@4.6.4)(zod@3.23.8)
+        specifier: ^0.4.1
+        version: 0.4.1(hono@4.6.8)(zod@3.23.8)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -28,8 +28,8 @@ importers:
         specifier: ^4.20240529.0
         version: 4.20241011.0
       hono:
-        specifier: ^4.5.3
-        version: 4.6.4
+        specifier: ^4.6.8
+        version: 4.6.8
       tsup:
         specifier: ^8.2.3
         version: 8.3.0(postcss@8.4.47)(typescript@5.6.3)
@@ -645,8 +645,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@hono/zod-validator@0.2.2':
-    resolution: {integrity: sha512-dSDxaPV70Py8wuIU2QNpoVEIOSzSXZ/6/B/h4xA7eOMz7+AarKTSGV8E6QwrdcCbBLkpqfJ4Q2TmBO0eP1tCBQ==}
+  '@hono/zod-validator@0.4.1':
+    resolution: {integrity: sha512-I8LyfeJfvVmC5hPjZ2Iij7RjexlgSBT7QJudZ4JvNPLxn0JQ3sqclz2zydlwISAnw21D2n4LQ0nfZdoiv9fQQA==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.19.1
@@ -1115,8 +1115,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hono@4.6.4:
-    resolution: {integrity: sha512-T5WqBkTOcIQblqBKB5mpzaH/A+dSpvVe938xZJCHOmOuYfF7DSwE/9/10+BMvwSPq9N/f6LiQ38HxrZSQOsXKw==}
+  hono@4.6.8:
+    resolution: {integrity: sha512-f+2Ec9JAzabT61pglDiLJcF/DjiSefZkjCn9bzm1cYLGkD5ExJ3Jnv93ax9h0bn7UPLHF81KktoyjdQfWI2n1Q==}
     engines: {node: '>=16.9.0'}
 
   human-id@1.0.2:
@@ -2256,9 +2256,9 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@hono/zod-validator@0.2.2(hono@4.6.4)(zod@3.23.8)':
+  '@hono/zod-validator@0.4.1(hono@4.6.8)(zod@3.23.8)':
     dependencies:
-      hono: 4.6.4
+      hono: 4.6.8
       zod: 3.23.8
 
   '@isaacs/cliui@8.0.2':
@@ -2769,7 +2769,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hono@4.6.4: {}
+  hono@4.6.8: {}
 
   human-id@1.0.2: {}
 
