@@ -1,5 +1,11 @@
 # durabcast
 
+## 0.2.2
+
+### Patch Changes
+
+- 6344d5f: upgrade pacakges
+
 ## 0.2.1
 
 ### Patch Changes
