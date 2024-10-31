@@ -40,5 +40,5 @@ jobs:
         with:
           install-script: "pnpm install"
           build-script: "build"
-          pattern: "./dist/**/*.{js}"
+          pattern: "./dist/*.{js}"
           exclude: "{**/*.map,**/node_modules/**}"
