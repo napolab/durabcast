@@ -2,10 +2,10 @@ name = "durabcast"
 main = "src/index.ts"
 compatibility_date = "2024-07-18"
 
-[[durable_objects.bindings]]
+[[env.test.durable_objects.bindings]]
 class_name = "BroadcastMessage"
 name = "BROADCAST_MESSAGE"
 
-[[migrations]]
+[[env.test.migrations]]
 tag = "v1"
 new_classes = ["BroadcastMessage"]

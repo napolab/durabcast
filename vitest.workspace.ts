@@ -25,6 +25,7 @@ export default defineWorkspace([
           },
           wrangler: {
             configPath: './wrangler.toml',
+            environment: 'test',
           },
         },
       },
