@@ -1,5 +1,16 @@
 # durabcast
 
+## 0.2.4
+
+### Patch Changes
+
+- 890eb38: docs: Update README to use wrangler types instead of @cloudflare/workers-types
+
+  - Remove @cloudflare/workers-types from installation instructions
+  - Add comprehensive TypeScript setup section with wrangler types
+  - Include development workflow and CI/CD integration examples
+  - Update Basic Usage section with clear setup steps
+
 ## 0.2.3
 
 ### Patch Changes
