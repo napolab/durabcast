@@ -27,13 +27,125 @@
 ## Installation
 
 ```sh
-npm install -D @cloudflare/workers-types
 npm install durabcast
 ```
+
+## TypeScript Setup
+
+To use `DurabCast` with TypeScript, you need to generate types for your Cloudflare Workers runtime environment. Instead of using the static `@cloudflare/workers-types` package, we recommend using `wrangler types` which generates types based on your specific configuration.
+
+### Generate Types
+
+Run the following command to generate types:
+
+```sh
+npx wrangler types
+```
+
+This will create a `worker-configuration.d.ts` file in your project root, which includes:
+- Types for your specific Cloudflare Workers runtime based on your compatibility date
+- Types for your bindings defined in `wrangler.toml`
+- Types for any module rules specified in your configuration
+
+### TypeScript Configuration
+
+Make sure your `tsconfig.json` includes the generated types file:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "lib": ["ESNext"]
+  },
+  "include": ["src/**/*", "worker-configuration.d.ts"]
+}
+```
+
+### Package Scripts
+
+Add the type generation command to your `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "cf-typegen": "wrangler types",
+    "build": "wrangler types && your-build-command",
+    "dev": "wrangler types && wrangler dev"
+  }
+}
+```
+
+It's recommended to run `wrangler types` before any TypeScript compilation or development commands to ensure your types are up-to-date.
+
+### Development Workflow
+
+For local development, you can integrate type generation into your development workflow:
+
+```sh
+# Generate types and start development server
+npm run cf-typegen && npm run dev
+
+# Or create a combined script
+npm run dev  # if your dev script includes wrangler types
+```
+
+### CI/CD Integration
+
+For Continuous Integration, you have two options:
+
+#### Option 1: Commit the generated types file
+Commit your `worker-configuration.d.ts` file to version control. This ensures consistent types across all environments:
+
+```sh
+# Generate types locally
+npm run cf-typegen
+
+# Commit the generated file
+git add worker-configuration.d.ts
+git commit -m "Update worker types"
+```
+
+#### Option 2: Generate types in CI
+Generate types during the CI process:
+
+```yaml
+# Example GitHub Actions workflow
+- name: Install dependencies
+  run: npm ci
+
+- name: Generate types
+  run: npm run cf-typegen
+
+- name: Type check
+  run: npm run typecheck
+
+- name: Build
+  run: npm run build
+```
+
+**Note:** Type generation typically takes only a few seconds, so either approach works well depending on your team's preferences.
 
 ## Basic Usage
 
 Here is a simple example to get started with `DurabCast`.
+
+### Setup Steps
+
+1. Install the library:
+   ```sh
+   npm install durabcast
+   ```
+
+2. Generate TypeScript types for your Worker configuration:
+   ```sh
+   npx wrangler types
+   ```
+
+3. Configure your project files as shown below.
 
 ### `wrangler.toml`
 
