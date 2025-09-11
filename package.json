@@ -38,11 +38,7 @@
       }
     }
   },
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
+  "files": ["dist", "README.md", "package.json"],
   "private": false,
   "license": "MIT",
   "publishConfig": {
