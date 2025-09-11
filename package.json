@@ -76,6 +76,9 @@
     "test": "vitest --passWithNoTests",
     "release": "changeset publish"
   },
+  "engines": {
+    "node": "22.18.0"
+  },
   "peerDependencies": {
     "hono": ">=4.3.0"
   },
@@ -83,5 +86,5 @@
     "@hono/zod-validator": "^0.4.1",
     "zod": "^3.23.8"
   },
-  "packageManager": "pnpm@9.12.1"
+  "packageManager": "pnpm@10.15.1"
 }

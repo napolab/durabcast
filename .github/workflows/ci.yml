@@ -11,7 +11,7 @@ on:
         default: "main"
 
 env:
-  PNPM_VERSION: 9.12.1
+  PNPM_VERSION: 10.15.1
 
 jobs:
   setup:
