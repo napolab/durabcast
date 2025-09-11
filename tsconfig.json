@@ -6,8 +6,9 @@
     "strict": true,
     "skipLibCheck": true,
     "lib": ["ESNext"],
-    "types": ["@cloudflare/workers-types", "vitest/globals", "@cloudflare/vitest-pool-workers"],
+    "types": ["vitest/globals", "@cloudflare/vitest-pool-workers"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
-  }
+  },
+  "include": ["src/**/*", "worker-configuration.d.ts", "test/env.d.ts"]
 }
